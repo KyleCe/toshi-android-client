@@ -121,7 +121,7 @@
     <string name="username_search_response_no_match">No user found with this username</string>
     <string name="parentheses">(%1$d)</string>
     <string name="write_a_review_optional">Write a review (optional)</string>
-    <string name="rate_this_user">Rate this user</string>
+    <string name="rate_this_user">Rate user</string>
     <string name="rate_bot">Rate bot</string>
     <string name="no_thanks">No thanks</string>
     <string name="search_people">Search people</string>

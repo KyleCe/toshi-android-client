@@ -126,9 +126,6 @@ class ViewUserActivity : AppCompatActivity() {
         viewModel.isLocalUser.observe(this, Observer {
             isLocalUser -> isLocalUser?.let { rateUser.isVisible(!it) }
         })
-        viewModel.isFavored.observe(this, Observer {
-            isFavored -> isFavored?.let { updateFavoriteState(it) }
-        })
         viewModel.isUserBlocked.observe(this, Observer {
             isUserBlocked -> isUserBlocked?.let { updateMenu(it) }
         })
@@ -164,15 +161,16 @@ class ViewUserActivity : AppCompatActivity() {
         username.text = user.username
         about.text = user.about
         location.text = user.location
-        about.isVisible(user.about != null)
-        location.isVisible(user.location != null)
+        val hasAboutContent = (user.about?.length ?: -1) > 0
+        about.isVisible(hasAboutContent)
+        val hasLocationContent = (user.location?.length ?: -1) > 0
+        location.isVisible(hasLocationContent)
+        descriptionSection.isVisible(hasAboutContent || hasLocationContent)
         ImageUtil.load(user.avatar, avatar)
         if (shouldPlayScanSounds()) SoundManager.getInstance().playSound(SoundManager.SCAN_ERROR)
     }
 
     private fun addClickListeners(user: User) {
-        favorite.setOnClickListener { viewModel.favorOrUnFavorUser(user) }
-        favorite.isEnabled = true
         messageContactButton.setOnClickListener { startChatActivity(user) }
         pay.setOnClickListener { startAmountActivityForResult() }
     }
@@ -185,18 +183,6 @@ class ViewUserActivity : AppCompatActivity() {
     private fun startAmountActivityForResult() = startActivityForResult<AmountActivity>(ETH_PAY_CODE, {
         putExtra(AmountActivity.VIEW_TYPE, PaymentType.TYPE_SEND)
     })
-
-    private fun updateFavoriteState(isAContact: Boolean) {
-        favorite.isSoundEffectsEnabled = isAContact
-
-        val checkMark = if (isAContact) getDrawableById(R.drawable.ic_star_selected)
-        else getDrawableById(R.drawable.ic_star_unselected)
-        favorite.setCompoundDrawablesWithIntrinsicBounds(null, checkMark, null, null)
-
-        val color = if (isAContact) getColorById(R.color.colorPrimary)
-        else getColorById(R.color.profile_icon_text_color)
-        favorite.setTextColor(color)
-    }
 
     private fun updateMenu(isUserBlocked: Boolean) {
         val menuItem = menu?.findItem(R.id.block) ?: return
