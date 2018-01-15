@@ -44,10 +44,7 @@ import com.toshi.util.BrowseType.VIEW_TYPE_LATEST_PUBLIC_USERS
 import com.toshi.util.BrowseType.VIEW_TYPE_TOP_RATED_APPS
 import com.toshi.util.BrowseType.VIEW_TYPE_TOP_RATED_PUBLIC_USERS
 import com.toshi.util.LogUtil
-import com.toshi.view.activity.BrowseMoreActivity
-import com.toshi.view.activity.ViewDappActivity
-import com.toshi.view.activity.ViewUserActivity
-import com.toshi.view.activity.WebViewActivity
+import com.toshi.view.activity.*
 import com.toshi.view.adapter.HorizontalAdapter
 import com.toshi.view.adapter.ToshiEntityAdapter
 import com.toshi.view.adapter.listeners.OnItemClickListener
@@ -142,7 +139,7 @@ class BrowseFragment : Fragment(), TopLevelFragment {
         val recyclerView = initRecyclerView(
                 topRatedApps,
                 HorizontalAdapter<App>(5),
-                OnItemClickListener { startProfileActivity(it) }
+                OnItemClickListener { startBotProfileActivity(it) }
         )
         recyclerView.layoutManager.scrollToPosition(topRatedAppsScrollPosition)
     }
@@ -177,6 +174,12 @@ class BrowseFragment : Fragment(), TopLevelFragment {
     private fun startProfileActivity(toshiEntity: ToshiEntity?) {
         toshiEntity?.toshiId?.let {
             startActivity<ViewUserActivity> { putExtra(ViewUserActivity.EXTRA__USER_ADDRESS, it) }
+        }
+    }
+
+    private fun startBotProfileActivity(toshiEntity: ToshiEntity?) {
+        toshiEntity?.toshiId?.let {
+            startActivity<ViewBotActivity> { putExtra(ViewBotActivity.EXTRA__BOT_ADDRESS, it) }
         }
     }
 
