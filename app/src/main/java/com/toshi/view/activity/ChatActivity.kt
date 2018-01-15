@@ -174,7 +174,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun initClickListeners() {
         chatInput
-                .setOnSendMessageClicked { viewModel.sendMessage(it) }
+                .setOnSendMessageClicked { viewModel.sendMessage(it); forceScrollToBottom(false) }
                 .setOnAttachmentClicked { checkExternalStoragePermission() }
                 .setOnCameraClickedListener { checkCameraPermission() }
         controlView.setOnControlClickedListener { handleControlClicked(it) }
