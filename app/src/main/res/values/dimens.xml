@@ -59,4 +59,6 @@
     <dimen name="list_item_avatar_margin">12dp</dimen>
 
     <dimen name="passphrase_sign_in_spacing">8dp</dimen>
+
+    <dimen name="keyboard_threshold">100dp</dimen>
 </resources>

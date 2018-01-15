@@ -22,10 +22,12 @@ import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.toshi.BuildConfig
 import com.toshi.R
@@ -100,6 +102,7 @@ class ChatActivity : AppCompatActivity() {
         initNetworkView()
         initRecyclerView()
         initControlView()
+        initKeyboardListener()
         initClickListeners()
         loadConversation()
         initObservers()
@@ -176,6 +179,29 @@ class ChatActivity : AppCompatActivity() {
                 .setOnCameraClickedListener { checkCameraPermission() }
         controlView.setOnControlClickedListener { handleControlClicked(it) }
         closeButton.setOnClickListener { hideKeyboard(); finish() }
+    }
+
+    private fun initKeyboardListener() {
+        val rect = Rect()
+        val threshold = getPxSize(R.dimen.keyboard_threshold)
+        val activityRoot = findViewById<ViewGroup>(android.R.id.content).getChildAt(0)
+        var wasOpened = false
+
+        activityRoot.viewTreeObserver.addOnGlobalLayoutListener {
+            activityRoot.getWindowVisibleDisplayFrame(rect)
+            val heightDiff = activityRoot.rootView.height - rect.height()
+            val isOpen = heightDiff > threshold
+            if (isOpen == wasOpened) return@addOnGlobalLayoutListener
+            wasOpened = isOpen
+            if (isOpen) forceScrollToBottom(false)
+        }
+    }
+
+    private fun forceScrollToBottom(animate: Boolean) {
+        if (messageAdapter.itemCount == 0) return
+        val bottomPosition = messageAdapter.itemCount - 1
+        if (animate) messagesList.smoothScrollToPosition(bottomPosition)
+        else messagesList.scrollToPosition(bottomPosition)
     }
 
     private fun checkExternalStoragePermission() {
